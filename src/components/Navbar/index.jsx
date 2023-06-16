@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { LuMenu, LuX } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
 import logo from '../../assets/logo.png';
@@ -21,13 +21,12 @@ const Index = () => {
   const { logout } = UseAuthentication();
   const userEmail = user ? user.email : '';
   const { userName, userStatus } = useUserInfo(userEmail);
-  const ref = useRef();
   const [expanded, setExpanded] = useState(false);
 
   const toggleMenu = () => {
     setExpanded(!expanded);
-    ref.current.classList.add('expanded');
   };
+
   return (
     <Header>
       <ContainerMaxWidth>
@@ -42,7 +41,7 @@ const Index = () => {
                 {expanded ? <LuX /> : <LuMenu />}
               </MobileMenuToggle>
 
-              <ContainerAdaptiveMenu ref={ref} className={expanded ? 'expanded' : ''}>
+              <ContainerAdaptiveMenu $expanded={expanded}>
                 <NavLinkStyled aria-label='home' activeClassName='active' to='/'>
                   Home
                 </NavLinkStyled>

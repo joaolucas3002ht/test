@@ -101,16 +101,11 @@ export const ContainerAdaptiveMenu = styled.section`
 
     width: 100%;
     height: 100%;
-    transform: scaleY(0);
     transform-origin: top right;
     transition: transform 0.25s ease;
-    visibility: hidden;
-
-    &.expanded {
-      transform: scaleY(1);
-      visibility: ${({ theme }) => theme.scale.visible};
-      z-index: 1;
-    }
+    transform: ${props => (props.$expanded ? 'scaleY(1)' : 'scaleY(0)')};
+    visibility: ${props => (props.$expanded ? 'visible' : 'hidden')};
+    z-index: 1;
   }
 `;
 
@@ -141,7 +136,6 @@ export const NavLinkStyled = styled(NavLink)`
   }
 
   @media (max-width: 900px) {
-
     width: 100%;
     padding: 1.3rem;
     font-size: ${({ theme }) => theme.font.size.base};
@@ -171,7 +165,7 @@ export const MobileMenuToggle = styled.button`
   display: none;
   @media (max-width: 900px) {
     display: flex;
-    margin-right: .5rem;
+    margin-right: 0.5rem;
     z-index: 1;
   }
 `;
