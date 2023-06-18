@@ -4,6 +4,7 @@ import { ButtonForm, ContainerForm, Form } from '../../styles/styledsLoaginAndRe
 import { ContainerCenter } from '../../styles/styledGlobal';
 import { useState, useEffect } from 'react';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   const [email, setEmail] = useState('');
@@ -44,10 +45,10 @@ const Index = () => {
           </ButtonForm>
           <h4>
             Resetou sua senha?
-            <a href='/login' style={{ textDecoration: 'none' }}>
+            <Link to='/login' style={{ textDecoration: 'none' }}>
               {' '}
               Faça login!
-            </a>
+            </Link>
           </h4>
         </Form>
       </ContainerForm>

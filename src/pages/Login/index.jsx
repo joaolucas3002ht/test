@@ -4,6 +4,7 @@ import { CreateInput } from '../../components/CreateInput';
 import { UseAuthentication } from '../../hooks/useAuthentication';
 import { ContainerCenter } from '../../styles/styledGlobal';
 import { ButtonForm, ContainerForm, Error, Form } from '../../styles/styledsLoaginAndRecord';
+import { Link, redirect } from 'react-router-dom';
 
 const Index = () => {
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ const Index = () => {
     };
     const res = await login(user);
     console.log(res);
+    redirect("/")
   };
   useEffect(() => {
     if (authError) {
@@ -61,10 +63,10 @@ const Index = () => {
           {error && <Error>{error}</Error>}
           <h4>
             Esqueceu sua senha?{' '}
-            <a href='/forgot-password' style={{ textDecoration: 'none' }}>
+            <Link to='/forgot-password' style={{ textDecoration: 'none' }}>
               {' '}
               Clique aqui!
-            </a>
+            </Link>
           </h4>
         </Form>
       </ContainerForm>

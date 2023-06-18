@@ -5,6 +5,7 @@ export const DialogOverlay = styled(Overlay)`
   background-color: rgba(0 0 0 / 0.5);
   position: fixed;
   inset: 0;
+  z-index:2;
   animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 `;
 
@@ -22,6 +23,7 @@ export const DialogContent = styled(Content)`
   overflow: auto;
   padding: 2.5rem;
   animation: both 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
 
   &::-webkit-scrollbar {
     width: 0.8rem;

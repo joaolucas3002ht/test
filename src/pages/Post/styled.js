@@ -60,18 +60,6 @@ export const Title = styled.h1`
   color: ${theme.color.firstBg};
   padding: 10px;
   font-family: 'AmpleSoft Pro';
-
-  @font-face {
-    font-family: 'AmpleSoft Pro';
-    src: url('AmpleSoftPro-Bold.eot');
-    src: local('AmpleSoftPro-Bold'),
-        url('AmpleSoftPro-Bold.eot?#iefix') format('embedded-opentype'),
-        url('AmpleSoftPro-Bold.woff2') format('woff2'),
-        url('AmpleSoftPro-Bold.woff') format('woff'),
-        url('AmpleSoftPro-Bold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
 `;
 
 export const ContainerTag = styled.div`

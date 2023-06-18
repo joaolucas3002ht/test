@@ -18,20 +18,30 @@ export const ContainerMaxWidth = styled.div`
   align-items: center;
 `;
 
+//   test
+//
+// export const Ttt = styled.div`
+//   /* display: flex; */
+//   overflow: visible;
+//   width: 100%;
+//   height: 100%;
+//   /* justify-content: space-between; */
+//   background-color: red;
+//   /* align-items: center; */
+// `;
+
 export const NavLinkLogo = styled(NavLink)`
   display: flex;
   align-items: center;
   padding: 5px;
+  height: 100%;
   text-decoration: none;
 
-  span {
-    color: rgb(255, 255, 255);
-    font-size: 2.4rem;
-    color: white;
-    margin-bottom: 4px;
-    font-family: 'AmpleSoft Pro';
-    font-weight: bold;
-  }
+  // test
+  /* width: 42rem;
+  transform: scale(0.6);
+  width: fit-content;
+  background-color: aquamarine; */
 `;
 
 export const Logo = styled.img`
@@ -39,6 +49,28 @@ export const Logo = styled.img`
   margin-top: 6px;
   margin-right: 1px;
   text-decoration: none;
+
+  @media (max-width: 900px) {
+    width: 100px;
+  }
+`;
+
+export const UserName = styled.span`
+  color: rgb(255, 255, 255);
+  font-size: 2.4rem;
+  color: white;
+  margin-bottom: 4px;
+  font-family: 'AmpleSoft Pro';
+  font-weight: bold;
+
+  @media (max-width: 900px) {
+    color: rgb(255, 255, 255);
+    font-size: 1.8rem;
+    color: white;
+    font-family: 'AmpleSoft Pro';
+    font-weight: bold;
+    margin-bottom: -1px;
+  }
 `;
 
 export const Nav = styled.nav`
@@ -55,10 +87,10 @@ export const Nav = styled.nav`
     width: fit-content;
     height: fit-content;
     gap: 1rem;
+    z-index: 1;
     align-items: end;
     flex-direction: column;
     padding-top: 1.95rem;
-    width: 24rem;
   }
 `;
 
@@ -90,6 +122,7 @@ export const ContainerAdaptiveMenu = styled.section`
   width: fit-content;
   justify-content: center;
   align-items: center;
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease, visibility 0.1s ease;
 
   @media (max-width: 900px) {
     background-color: ${({ theme }) => theme.color.fifth};
@@ -99,13 +132,11 @@ export const ContainerAdaptiveMenu = styled.section`
     border-end-end-radius: ${({ theme }) => theme.border.radius};
     border-end-start-radius: ${({ theme }) => theme.border.radius};
 
-    width: 100%;
-    height: 100%;
+    width: ${props => (props.$expanded ? '24rem' : '4rem')};
+    height: ${props => (props.$expanded ? '100%' : 0)};
     transform-origin: top right;
-    transition: transform 0.25s ease;
     transform: ${props => (props.$expanded ? 'scaleY(1)' : 'scaleY(0)')};
     visibility: ${props => (props.$expanded ? 'visible' : 'hidden')};
-    z-index: 1;
   }
 `;
 
@@ -143,10 +174,8 @@ export const NavLinkStyled = styled(NavLink)`
     gap: 0.5rem;
     border-radius: 0;
 
-    &.expanded {
-      & span {
-        display: inline;
-      }
+    & span {
+      display: inline;
     }
   }
 `;
@@ -164,8 +193,8 @@ export const MobileMenuToggle = styled.button`
 
   display: none;
   @media (max-width: 900px) {
-    display: flex;
     margin-right: 0.5rem;
+    display: flex;
     z-index: 1;
   }
 `;

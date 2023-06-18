@@ -4,7 +4,6 @@ import { MdLogout } from 'react-icons/md';
 import logo from '../../assets/logo.png';
 import { UseAuthValue } from '../../context/AuthContext';
 import { UseAuthentication } from '../../hooks/useAuthentication';
-import { useUserInfo } from '../../hooks/userName';
 import {
   ContainerAdaptiveMenu,
   ContainerMaxWidth,
@@ -14,13 +13,12 @@ import {
   Nav,
   NavLinkLogo,
   NavLinkStyled,
+  UserName,
 } from './styled.js';
 
 const Index = () => {
-  const { user } = UseAuthValue();
+  const { user, userName, userStatus } = UseAuthValue();
   const { logout } = UseAuthentication();
-  const userEmail = user ? user.email : '';
-  const { userName, userStatus } = useUserInfo(userEmail);
   const [expanded, setExpanded] = useState(false);
 
   const toggleMenu = () => {
@@ -30,10 +28,11 @@ const Index = () => {
   return (
     <Header>
       <ContainerMaxWidth>
-        <NavLinkLogo to='/' style={{ textDecoration: 'none' }}>
+        <NavLinkLogo to='/'>
           <Logo src={logo} alt='logo' />
-          {user && <span>{'/' + userName}</span>}
+          {!!user && <UserName>{'@' + userName}</UserName>}
         </NavLinkLogo>
+
         <Nav>
           {user && (
             <>
@@ -42,12 +41,16 @@ const Index = () => {
               </MobileMenuToggle>
 
               <ContainerAdaptiveMenu $expanded={expanded}>
-                <NavLinkStyled aria-label='home' activeClassName='active' to='/'>
+                <NavLinkStyled
+                  aria-label='home'
+                  className={isActive => (isActive ? 'active' : '')}
+                  to='/'
+                >
                   Home
                 </NavLinkStyled>
                 <NavLinkStyled
                   aria-label='Catálogo de postagens'
-                  activeClassName='active'
+                  className={isActive => (isActive ? 'active' : '')}
                   to='/catalog'
                 >
                   Catalog
@@ -57,14 +60,14 @@ const Index = () => {
                     <NavLinkStyled
                       aria-label='novo post'
                       to='/create-post'
-                      activeClassName='active'
+                      className={isActive => (isActive ? 'active' : '')}
                     >
                       Novo Post
                     </NavLinkStyled>
                     <NavLinkStyled
                       aria-label='painel principal'
                       to='/dashboard'
-                      activeClassName='active'
+                      className={isActive => (isActive ? 'active' : '')}
                     >
                       Dashboard
                     </NavLinkStyled>
@@ -72,7 +75,7 @@ const Index = () => {
                       <NavLinkStyled
                         to='/register'
                         aria-label='pagina de cadastro'
-                        activeClassName='active'
+                        className={isActive => (isActive ? 'active' : '')}
                       >
                         Cadastro
                       </NavLinkStyled>
@@ -80,8 +83,8 @@ const Index = () => {
                   </>
                 )}
                 <NavLinkStyled to='/login' aria-label='logout' onClick={logout} className='active'>
+                  {expanded ? 'Sair' : <span>Sair</span>}
                   <MdLogout size={20} />
-                  <span>Sair</span>
                 </NavLinkStyled>
               </ContainerAdaptiveMenu>
             </>
@@ -93,11 +96,3 @@ const Index = () => {
 };
 
 export default Index;
-
-/*
-              <ContainerAdaptiveMenu
-                id='menu'
-                role='navigation'
-                aria-hidden='true'
-                className={`${classToggle} `}
-              ></ContainerAdaptiveMenu> */
