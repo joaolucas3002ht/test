@@ -10,7 +10,7 @@ import {
   Video,
 } from './styled';
 
-const index = ({ post }) => {
+export const PostDetailsHome = ({ post }) => {
   const limiteCaracteres = 200;
   const body =
     post.body.length > limiteCaracteres
@@ -21,11 +21,11 @@ const index = ({ post }) => {
     <ContainerPost as={Link} to={`/posts/${post.id}`}>
       {post.mediaURL && (post.mediaURL.includes('.mp4') || post.mediaURL.includes('.webm')) ? (
         <ContainerMidia>
-          <Video src={post.mediaURL} alt={post.title} title={body}/>
+          <Video src={post.mediaURL} alt={post.title} title={body} />
         </ContainerMidia>
       ) : (
         <ContainerMidia>
-          <Image src={post.mediaURL} alt={post.title} title={body}/>
+          <Image src={post.mediaURL} alt={post.title} title={body} />
         </ContainerMidia>
       )}
 
@@ -42,4 +42,3 @@ const index = ({ post }) => {
   );
 };
 
-export default index;

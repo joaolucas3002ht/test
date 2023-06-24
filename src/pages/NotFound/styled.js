@@ -11,6 +11,7 @@ export const Container = styled.div`
 
 export const Image = styled.img`
   width: min(100%, 90rem);
+  margin-top: -40px;
 `;
 
 export const Title = styled.h1`

@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 //react
 import { useEffect, useState } from 'react';
 //react router
 import { RouterProvider } from 'react-router-dom';
 //firebase
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 //router
 import { router } from './router';
 //context
@@ -11,26 +12,53 @@ import { AuthProvider } from './context/AuthContext';
 //hooks
 import { UseAuthentication } from './hooks/useAuthentication';
 import { useUserInfo } from './hooks/userName';
+import { ContainerSpinerLoading, SpinerLoading } from './styles/styledGlobal';
 
 function App() {
   const [user, setUser] = useState(undefined);
   const { auth } = UseAuthentication();
   const userEmail = user ? user.email : '';
-  const { userStatus, userName } = useUserInfo(userEmail);
+  const { userStatus, userName, deletedAt, userId } = useUserInfo(userEmail);
   const loadingUser = user === undefined;
+  const [countdown, setCountdown] = useState(3600); // 3600 segundos
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCountdown(prevCountdown => {
+        if (prevCountdown % 60 === 0) {
+          console.log(`A página será atualizada em ${prevCountdown/60} minutos...`);
+        }
+        return prevCountdown - 1;
+      });
+    }, 1000);
+
+    const timeoutId = setTimeout(() => {
+      window.location.reload();
+    }, 3600000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (deletedAt !== '' && userId === userEmail) {
+      signOut(auth);
+    }
     onAuthStateChanged(auth, user => {
       setUser(user);
     });
-  }, [auth]);
+  }, [auth, deletedAt]);
 
   if (loadingUser) {
-    return <p>Carregando...</p>;
+    return (
+      <ContainerSpinerLoading><SpinerLoading  size={45}/></ContainerSpinerLoading>
+    );
   }
 
   return (
-    <AuthProvider value={{ user, userStatus, userName }}>
+    <AuthProvider value={{ user, userStatus, userName, userEmail }}>
       <RouterProvider router={router} />
     </AuthProvider>
   );

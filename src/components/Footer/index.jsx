@@ -37,7 +37,7 @@ const index = () => {
 
         <Description>
           <a href='https://genuinesistemas.com.br/' title={site}>
-            <ImgFooter src={logo} />
+            <ImgFooter src={logo} style={{marginRight: '5px'}}/>
           </a>
           Genuine Sistemas &copy; , Todos os direitos reservados {year}
         </Description>

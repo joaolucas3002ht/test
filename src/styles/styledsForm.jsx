@@ -44,22 +44,22 @@ export const ButtonForm = styled.button`
   text-align: center;
   cursor: pointer;
   border-radius: 10px;
-  width: 120px;
+  width: 100%;
   font-weight: bold;
   border: none;
-  padding: 10px 15px;
+  padding: 14px 15px;
   font-size: 1.6rem;
   transition: 300ms color, 300ms background-color;
 
   &:hover {
-    background-color: ${({ theme }) => theme.color.fifth};
+    background-color: ${({ theme }) => theme.color.secondOpacity03};
     color: ${({ theme }) => theme.color.fourth};
     transition: 0.5s;
     border-radius: 10px;
   }
 
   &:disabled {
-    background-color: hsl(198, 97%, 10%);
+    background-color: ${({ theme }) => theme.color.fifth};
   }
   :focus {
     outline: 2px solid ${({ theme }) => theme.color.fourth};

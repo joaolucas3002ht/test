@@ -16,7 +16,7 @@ import { MdOutlineTextFields } from 'react-icons/md';
 import { RxFilePlus } from 'react-icons/rx';
 
 import { ContainerCenter, SpinerLoading } from '../../styles/styledGlobal';
-import { ButtonForm, ContainerForm, Error, Form } from '../../styles/styledsLoaginAndRecord';
+import { ButtonForm, ContainerForm, Error, Form } from '../../styles/styledsForm';
 import { Progress } from '../CreatePost/styled';
 
 const EditPost = () => {

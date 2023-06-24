@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 import { LuMenu, LuX } from 'react-icons/lu';
 import { MdLogout } from 'react-icons/md';
@@ -17,18 +18,22 @@ import {
 } from './styled.js';
 
 const Index = () => {
-  const { user, userName, userStatus } = UseAuthValue();
+  const { user, userName, userStatus, userEmail } = UseAuthValue();
   const { logout } = UseAuthentication();
   const [expanded, setExpanded] = useState(false);
-
   const toggleMenu = () => {
     setExpanded(!expanded);
   };
-
+  const atualizarTelaManualmente = () => {
+    this.forceUpdate();
+  };
   return (
     <Header>
       <ContainerMaxWidth>
-        <NavLinkLogo to='/'>
+        <NavLinkLogo
+          to='/' //atualiza a tela ao clicar
+          onClick={atualizarTelaManualmente}
+        >
           <Logo src={logo} alt='logo' />
           {!!user && <UserName>{'@' + userName}</UserName>}
         </NavLinkLogo>
@@ -55,7 +60,7 @@ const Index = () => {
                 >
                   Catalog
                 </NavLinkStyled>
-                {(userStatus === 'admin' || userStatus === 'funcionario') && (
+                {(userStatus === 'funcionario' || userStatus === 'admin') && (
                   <>
                     <NavLinkStyled
                       aria-label='novo post'
@@ -71,19 +76,34 @@ const Index = () => {
                     >
                       Dashboard
                     </NavLinkStyled>
-                    {userStatus === 'admin' && (
-                      <NavLinkStyled
-                        to='/register'
-                        aria-label='pagina de cadastro'
-                        className={isActive => (isActive ? 'active' : '')}
-                      >
-                        Cadastro
-                      </NavLinkStyled>
-                    )}
                   </>
                 )}
-                <NavLinkStyled to='/login' aria-label='logout' onClick={logout} className='active'>
-                  {expanded ? 'Sair' : <span>Sair</span>}
+                {userStatus === 'admin' && (
+                  <>
+                    <NavLinkStyled
+                      aria-label='painel de usuarios'
+                      to='/userspanel'
+                      className={isActive => (isActive ? 'active' : '')}
+                    >
+                      Painel de Usuários
+                    </NavLinkStyled>
+                    <NavLinkStyled
+                      to='/register'
+                      aria-label='pagina de cadastro'
+                      className={isActive => (isActive ? 'active' : '')}
+                    >
+                      Cadastro de Usuário
+                    </NavLinkStyled>
+                  </>
+                )}
+
+                <NavLinkStyled
+                  to='/login'
+                  aria-label='logout'
+                  onClick={() => logout(userEmail)}
+                  className='active'
+                >
+                  {expanded && <span>Sair</span>}
                   <MdLogout size={20} />
                 </NavLinkStyled>
               </ContainerAdaptiveMenu>

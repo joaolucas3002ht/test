@@ -1,10 +1,10 @@
-import { RiMailLine } from 'react-icons/ri';
-import { CreateInput } from '../../components/CreateInput';
-import { ButtonForm, ContainerForm, Form } from '../../styles/styledsLoaginAndRecord';
-import { ContainerCenter } from '../../styles/styledGlobal';
-import { useState, useEffect } from 'react';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+import { RiMailLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
+import { CreateInput } from '../../components/CreateInput';
+import { ContainerCenter } from '../../styles/styledGlobal';
+import { ButtonForm, ContainerForm, Form } from '../../styles/styledsForm';
 
 const Index = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +17,10 @@ const Index = () => {
         window.alert('E-mail de redefinição de senha enviado com sucesso!');
       })
       .catch(error => {
-        window.alert('Ocorreu um erro ao enviar o e-mail de redefinição de senha:', error);
+        window.alert(
+          'Ocorreu um erro ao enviar o e-mail de redefinição de senha:',
+          error?.menssage,
+        );
       });
   };
 

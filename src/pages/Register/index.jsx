@@ -1,11 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
 import InputMask from 'react-input-mask';
 import { CreateInput } from '../../components/CreateInput';
 import { UseAuthentication } from '../../hooks/useAuthentication';
 import { HiOutlinePhone } from 'react-icons/hi';
 import { RxEnvelopeClosed, RxLockClosed, RxAvatar, RxPerson } from 'react-icons/rx';
-import {MdOutlineAdminPanelSettings} from 'react-icons/md';
+import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+// import { useEffect, useState } from 'react';
+// import { HiOutlinePhone } from 'react-icons/hi';
+// import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+// import { RxAvatar, RxEnvelopeClosed, RxLockClosed, RxPerson } from 'react-icons/rx';
+// import InputMask from 'react-input-mask';
+// import { CreateInput } from '../../components/CreateInput';
+// import { UseAuthentication } from '../../hooks/useAuthentication';
 
 import {
   ButtonForm,
@@ -13,7 +20,9 @@ import {
   Error,
   Form,
   Success,
-} from '../../styles/styledsLoaginAndRecord';
+// } from '../../styles/styledsLoaginAndRecord';
+// import { redirect } from 'react-router-dom';
+} from '../../styles/styledsForm';
 
 const Index = () => {
   const [displayName, setDisplayName] = useState('');
@@ -24,8 +33,10 @@ const Index = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [userStatus, setUserStatus] = useState('');
+  const [deletedAt, setDeletedAt] = useState('');
+  const [loggedOutAt, setLoggedOutAt] = useState(Date.now().toString());
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.title = 'Genuine Sistemas - Novo Usuário';
   }, []);
 
@@ -46,9 +57,11 @@ const Index = () => {
       userName,
       password,
       userStatus,
+      deletedAt,
+      loggedOutAt
     };
 
-        if (userStatus === "") {
+    if (userStatus === '') {
       setError('por favor selecione o tipo de usuário');
       return;
     }
@@ -118,13 +131,13 @@ const Index = () => {
           onChange={e => setUserStatus(e.target.value)}
         >
           <option value=''>Selecione o tipo de usuário</option>
-          <hr/>
+          <hr />
           <option value='admin'>Administrador</option>
-          <hr/>
+          <hr />
           <option value='funcionario'>Funcionário</option>
-          <hr/>
+          <hr />
           <option value='cliente'>Cliente</option>
-          <hr/>
+          <hr />
         </CreateInput>
         <CreateInput
           Svg={HiOutlinePhone}

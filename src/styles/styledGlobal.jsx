@@ -1,6 +1,6 @@
 import { LuLoader2 } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
-import styled, { css,keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const containerStyleBody = css`
   background-image: linear-gradient(120.21deg, #888f93 11.18%, #0c6870 74.17%);
@@ -28,7 +28,6 @@ export const MaxWidth = css`
   margin: 0 auto;
   height: 100%;
   width: min(100%, 141rem);
-
 `;
 
 export const Main = styled.main`
@@ -67,7 +66,6 @@ export const CreatePostButton = styled.a`
     background-color: ${({ theme }) => theme.color.fifth};
   }
 `;
-
 
 export const SearchForm = styled.form`
   width: 100%;
@@ -111,6 +109,16 @@ export const PostsNotFoundTitle = styled.h3`
   color: ${({ theme }) => theme.color.thirdBg};
 `;
 
+export const ContainerSpinerLoading = styled.div`
+  min-height: 100vh;
+  height: 100%;
+  min-width: 100%;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  color: ${({ theme }) => theme.color.second};
+`;
+
 const spinAnimation = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -120,6 +128,22 @@ export const SpinerLoading = styled(LuLoader2)`
   animation: ${spinAnimation} .9s linear infinite;
 `;
 
+const skeletonKeyframes = keyframes`
+  0% {
+    opacity:.3
+  }
+  39%{
+    opacity:.3
+  }
+  89% {
+    opacity: .9
+  }
+`;
+
+export const SkeletonAnimated = css`
+  animation: ${skeletonKeyframes} 3s ease-in-out infinite;
+  animation-delay: 0.2s;
+`;
 
 // --------------------- //
 

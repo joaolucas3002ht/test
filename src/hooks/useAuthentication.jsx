@@ -7,7 +7,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { useState, useEffect } from 'react';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 
 export const UseAuthentication = () => {
   const [error, setError] = useState(null);
@@ -32,7 +32,10 @@ export const UseAuthentication = () => {
 
     try {
       // Verificar se já existe o userName na coleção
-      const userInfoQuery = query(collection(db, docCollection), where('userName', '==', data.userName));
+      const userInfoQuery = query(
+        collection(db, docCollection),
+        where('userName', '==', data.userName),
+      );
       const userIdQuery = query(collection(db, docCollection), where('userId', '==', data.email));
       const userInfoSnapshot = await getDocs(userInfoQuery);
       const userIdSnapshot = await getDocs(userIdQuery);
@@ -43,13 +46,22 @@ export const UseAuthentication = () => {
         throw new Error('Email já cadastrado!');
       }
       const { user } = await createUserWithEmailAndPassword(auth, data.email, data.password); // Criar usuário
-      await updateProfile(user, { displayName: data.displayName, phoneNumber: data.phoneNumber, userStatus: data.userStatus }); // Atualizar informações
+      await updateProfile(user, {
+        displayName: data.displayName,
+        phoneNumber: data.phoneNumber,
+        userStatus: data.userStatus,
+        deletedAt: data.deletedAt,
+        loggedOutAt: data.loggedOutAt,
+      }); // Atualizar informações
 
       const newUserInfo = {
         phoneNumber: data.phoneNumber,
         userName: data.userName,
         userId: data.email,
-        userStatus: data.userStatus
+        userStatus: data.userStatus,
+        loggedAt: '',
+        loggedOutAt: data.loggedOutAt,
+        deletedAt: data.deletedAt,
       };
       await addDoc(collection(db, docCollection), newUserInfo);
       setLoading(false);
@@ -76,9 +88,15 @@ export const UseAuthentication = () => {
   };
 
   //logout
-  const logout = () => {
+  const logout = async userEmail => {
     checkIfIsCanceled();
     signOut(auth);
+    const getUserInfo = query(collection(db, 'userInfo'), where('userId', '==', userEmail));
+    const getUserIdSnapshot = await getDocs(getUserInfo);
+    const user = await doc(db, 'userInfo', getUserIdSnapshot.docs[0].id);
+    await updateDoc(user, {
+      loggedOutAt: Date.now().toString(),
+    });
   };
 
   //login
@@ -87,6 +105,15 @@ export const UseAuthentication = () => {
     setLoading(true);
     setError(null);
     try {
+      const getUserInfo = query(collection(db, 'userInfo'), where('userId', '==', data.email));
+      const getUserIdSnapshot = await getDocs(getUserInfo);
+      const user = getUserIdSnapshot.docs[0];
+      if (user.data().deletedAt) {
+        logout(user.data().userId);
+        setLoading(false);
+        setError('Usuário desativado!');
+        return;
+      }
       await signInWithEmailAndPassword(auth, data.email, data.password);
       setLoading(false);
     } catch (error) {
@@ -101,6 +128,13 @@ export const UseAuthentication = () => {
       setError(systemMessageError);
       setLoading(false);
     }
+    const getUserInfo = query(collection(db, 'userInfo'), where('userId', '==', data.email));
+    const getUserIdSnapshot = await getDocs(getUserInfo);
+    const user = getUserIdSnapshot.docs[0];
+    const userRef = await doc(db, 'userInfo', user.id);
+    await updateDoc(userRef, {
+      loggedAt: Date.now().toString(),
+    });
   };
 
   useEffect(() => {

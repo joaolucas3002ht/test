@@ -7,7 +7,7 @@ import { useQuery } from '../../hooks/useQuery';
 
 // components
 import { Link } from 'react-router-dom';
-import PostDetail from '../../components/PostDetails';
+import { PostDetails } from '../../components/PostDetails';
 import { CreatePostButton } from '../../styles/styledGlobal';
 import { ContainerLink, ContainerPost, TextError } from './styled';
 
@@ -30,7 +30,7 @@ const Index = () => {
           )}
         </ContainerLink>
         <ContainerPost>
-          {posts && posts.map(post => <PostDetail key={post.id} post={post} />)}
+          {posts && posts.map(post => <PostDetails key={post.id} post={post} />)}
         </ContainerPost>
       </div>
     </div>
@@ -38,3 +38,4 @@ const Index = () => {
 };
 
 export default Index;
+

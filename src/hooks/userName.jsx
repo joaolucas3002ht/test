@@ -5,6 +5,8 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 export const useUserInfo = (email) => {
   const [userName, setUserName] = useState('');
   const [userStatus, setUserStatus] = useState('');
+  const [deletedAt, setDeletedAt] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -15,6 +17,8 @@ export const useUserInfo = (email) => {
           const userData = userSnapshot.docs[0].data();
           setUserName(userData.userName);
           setUserStatus(userData.userStatus);
+          setDeletedAt(userData.deletedAt);
+          setUserId(userData.userId);
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
@@ -26,5 +30,5 @@ export const useUserInfo = (email) => {
     }
   }, [email]);
 
-  return { userName, userStatus };
+  return { userName, userStatus, deletedAt, userId };
 };

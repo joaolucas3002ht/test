@@ -1,57 +1,85 @@
-import { useState, useEffect } from 'react';
-import { LuPlus, LuSearch } from 'react-icons/lu';
-import { Link, useNavigate } from 'react-router-dom';
-import PostDetails from '../../components/PostDetails';
-import { useFetchDocuments } from '../../hooks/useFetchDocuments';
-import { CreatePostButton, PostsNotFoundContainer, PostsNotFoundTitle, SearchButton, SearchForm, SearchInput } from '../../styles/styledGlobal';
+import { Suspense, useLayoutEffect } from 'react';
+import { LuSearch } from 'react-icons/lu';
+import { Await, Form, defer, redirect, useLoaderData } from 'react-router-dom';
+import { NoPost } from '../../components/NoPost';
+import { PostDetails } from '../../components/PostDetails';
+import { SkeletonPostDetails } from '../../components/SkeletonPostDetails';
+import { SearchButton, SearchForm, SearchInput } from '../../styles/styledGlobal';
+import { FetchDocuments } from '../../utils/FetchDocuments';
 import { CreatePostTitle } from '../Dashboard/styled';
-import { Container } from './styled';
 import { ContainerHome } from '../Home/styled';
+import { Container } from './styled';
 
 const Index = () => {
-  const [query, setQuery] = useState('');
-  const { documents: posts, loading } = useFetchDocuments('posts');
-  const navigate = useNavigate();
+  const data = useLoaderData();
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    if (query) {
-      return navigate(`/search?q=${query}`);
-    }
-  };
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.title = 'Genuine Sistemas - Catalogo';
   }, []);
 
+  const arrayLength = Array.from({ length: 16 }).map((_, i) => i);
+
   return (
     <ContainerHome>
-      <SearchForm onSubmit={handleSubmit}>
+      <SearchForm as={Form} method='POST' about='/catalog'>
         <SearchInput
+          name='query'
           type='text'
           aria-label='Digite aqui para pesquisar posts'
           placeholder='Digite aqui para pesquisar'
-          onChange={e => setQuery(e.target.value)}
         />
         <SearchButton aria-label='Realizar busca'>
           <LuSearch />
         </SearchButton>
       </SearchForm>
       <CreatePostTitle>Catalogo de postagens</CreatePostTitle>
-      <Container>
-        {loading && <p>Carregando...</p>}
-        {posts && posts.map(post => <PostDetails key={post.id} post={post} />)}
-        {posts && posts.length === 0 && (
-          <PostsNotFoundContainer>
-            <PostsNotFoundTitle>Nenhum post encontrado.</PostsNotFoundTitle>
-            <CreatePostButton as={Link} to='/create-post'>
-              Criar postagem <LuPlus size={17} />
-            </CreatePostButton>
-          </PostsNotFoundContainer>
-        )}
-      </Container>
+
+      <Suspense
+        fallback={
+          <Container>
+            {arrayLength.map((e, i) => (
+              <SkeletonPostDetails key={i} />
+            ))}
+          </Container>
+        }
+      >
+        <Await
+          resolve={data.PostsData}
+          errorElement={<NoPost title={'Nenhuma postagem encontrada.'} />}
+        >
+          {posts =>
+            posts?.data?.length ? (
+              <Container>
+                {posts?.data?.map(post => (
+                  <PostDetails key={post.id} post={post} />
+                ))}
+              </Container>
+            ) : (
+              <NoPost title={'Nenhuma postagem encontrada.'} />
+            )
+          }
+        </Await>
+      </Suspense>
     </ContainerHome>
   );
 };
 
 export default Index;
+
+export async function catalogLoader({ request }) {
+  const paramsUrl = new URL(request.url).searchParams;
+  const query = paramsUrl.get('q');
+
+  return defer({
+    PostsData: FetchDocuments('posts', query),
+  });
+}
+
+export async function catalogAction({ request }) {
+  const data = await request.formData();
+  const query = data.get('query');
+
+  const redirectValue = query ? `?q=${query}` : '';
+
+  return redirect(redirectValue);
+}

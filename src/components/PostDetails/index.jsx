@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Container, ContainerMidia, Image, Title, Video } from './styled';
 
-const Index = ({ post }) => {
+export const PostDetails = ({ post }) => {
   const limiteCaracteres = 200;
   const body =
     post.body.length > limiteCaracteres
       ? `${post.body.substring(0, limiteCaracteres)}...`
       : post.body;
-
 
   return (
     <Container as={Link} to={`/posts/${post.id}`}>
@@ -28,4 +27,3 @@ const Index = ({ post }) => {
   );
 };
 
-export default Index;

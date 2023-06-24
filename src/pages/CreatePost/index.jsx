@@ -93,10 +93,28 @@ const CreatePost = () => {
     navigate('/');
   };
 
-  const generateSearchTokens = title => {
-    const tokens = title.split(' ');
-    return tokens;
-  };
+
+    const stringInArray = string => {
+      return [...string].map((_, index) => string.substring(0, index + 1));
+    };
+
+    const generateSearchTokens = title => {
+      const correctedTitle = title.toLocaleLowerCase().replace(/\s+/g, ' ');
+
+      const ArrayTitle = correctedTitle.split(' ');
+
+      const substrings = ArrayTitle.reduce((acc, val) => {
+        return (acc = [...acc, ...stringInArray(val)]);
+      }, []);
+
+      const titleAll = stringInArray(correctedTitle);
+
+      const filter = [...substrings, ...titleAll].filter((element, index, arr) => {
+        return arr.indexOf(element) === index;
+      });
+
+      return filter;
+    };
 
   const generateRandomName = fileName => {
     const randomSuffix = Math.random().toString(36).substring(2, 8);
@@ -116,6 +134,8 @@ const CreatePost = () => {
       <ContainerForm>
         <h1>Criar novo post</h1>
         <Form onSubmit={handleSubmit}>
+          <input type='hidden' name='uid' value={user.uid} />
+          <input type='hidden' name='createdBy' value={user.displayName} />
           <ContainerFlex>
             <CreateInput
               Svg={MdOutlineTextFields}
@@ -159,6 +179,7 @@ const CreatePost = () => {
               required
             />
           </ContainerFlex>
+
           <ContainerFlex>
             <ButtonForm
               className='red'
@@ -181,3 +202,46 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
+
+// export async function ActionCreatePost({ request }) {
+//   const data = await request.formData();
+
+//   const formData = Object.fromEntries(data);
+
+//   const { tags, mediaURL } = formData;
+
+//   const mediaFile = mediaURL?.files[0];
+
+//   if (mediaFile) {
+//     return { error: 'Selecione uma imagem ou vídeo.' };
+//   }
+
+//   try {
+//     const mediaStorageRef = ref(storage, `posts/${mediaFile.name}`);
+//     const mediaUploadTask = uploadBytesResumable(mediaStorageRef, mediaFile);
+
+//     mediaUploadTask.on(
+//       'state_changed',
+//       snapshot => {
+//         // const progress =
+//         Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//       },
+
+//       error => {
+//         console.error(error);
+//       },
+//       () => {
+//         // getDownloadURL(mediaUploadTask.snapshot.ref).then(downloadURL => {
+//         // const post = {
+//         //   ...formData,
+//         //   mediaURL: downloadURL,
+//         //   tags: tags.split(',').map(tag => tag.trim()),
+//         // };
+//         // InsertDocument('posts', post);
+//         // });
+//       },
+//     );
+//   } catch (error) {
+//     return { type: 'ERROR', error: error.message, successMessage: '' };
+//   }
+// }

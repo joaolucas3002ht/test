@@ -1,34 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { RxEnvelopeClosed, RxLockClosed } from 'react-icons/rx';
+import { Form, Link, redirect, useActionData, useNavigation } from 'react-router-dom';
 import { CreateInput } from '../../components/CreateInput';
-import { UseAuthentication } from '../../hooks/useAuthentication';
 import { ContainerCenter } from '../../styles/styledGlobal';
-import { ButtonForm, ContainerForm, Error, Form } from '../../styles/styledsLoaginAndRecord';
-import { Link, redirect } from 'react-router-dom';
+import { ButtonForm, ContainerForm, Error, Form as FormStyled } from '../../styles/styledsForm';
+import { login } from '../../utils/Login';
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
+import { db } from '../../firebase/config';
 
 const Index = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const { login, error: authError, loading } = UseAuthentication();
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setError('');
-    const user = {
-      email,
-      password,
-    };
-    const res = await login(user);
-    console.log(res);
-    redirect("/")
-  };
-  useEffect(() => {
-    if (authError) {
-      setError(authError);
-    }
-  }, [authError]);
+  const navigation = useNavigation();
+  const action = useActionData();
+  const loading = navigation.state !== 'idle';
 
   useEffect(() => {
     document.title = 'Genuine Sistemas - Login';
@@ -38,7 +21,7 @@ const Index = () => {
     <ContainerCenter>
       <ContainerForm>
         <h1>Entrar</h1>
-        <Form onSubmit={handleSubmit}>
+        <FormStyled as={Form} method='POST'>
           <CreateInput
             Svg={RxEnvelopeClosed}
             aria-label='Email'
@@ -46,8 +29,6 @@ const Index = () => {
             name='email'
             required
             placeholder='E-mail do usuário'
-            value={email}
-            onChange={e => setEmail(e.target.value)}
           />
           <CreateInput
             Svg={RxLockClosed}
@@ -56,19 +37,16 @@ const Index = () => {
             name='password'
             required
             placeholder='Senha do usuário'
-            value={password}
-            onChange={e => setPassword(e.target.value)}
           />
           <ButtonForm disabled={loading}>{loading ? ' Aguarde...' : 'Entrar'}</ButtonForm>
-          {error && <Error>{error}</Error>}
+          {action?.error && <Error>{action?.error}</Error>}
           <h4>
             Esqueceu sua senha?{' '}
             <Link to='/forgot-password' style={{ textDecoration: 'none' }}>
-              {' '}
               Clique aqui!
             </Link>
           </h4>
-        </Form>
+        </FormStyled>
       </ContainerForm>
       <div></div>
     </ContainerCenter>
@@ -76,3 +54,43 @@ const Index = () => {
 };
 
 export default Index;
+
+export async function loginAction({ request }) {
+  const data = await request.formData();
+
+  const formData = Object.fromEntries(data);
+
+  const res = await login(formData);
+
+  if (res.success) {
+    return redirect('/');
+  } else {
+    return res;
+  }
+}
+
+export async function createUser({ email = '', password = '', displayName = '' }) {
+  const auth = getAuth();
+  let error = '';
+
+  try {
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(user, { displayName: displayName });
+
+    // Salvar displayName no Firestore
+    await db.collection('users').doc(user.uid).set({
+      displayName: displayName,
+    });
+
+    return { error, success: true, user };
+  } catch (err) {
+    if (err.message.includes('Password')) {
+      error = 'A senha precisa conter ao menos 6 caracteres!';
+    } else if (err.message.includes('auth/email-already-in-use')) {
+      error = 'E-mail já cadastrado!';
+    } else {
+      error = 'Ocorreu um erro ao criar o usuário, por favor tente novamente mais tarde!';
+    }
+    return { error, success: false };
+  }
+}
